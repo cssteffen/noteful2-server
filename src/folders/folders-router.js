@@ -8,8 +8,8 @@ const jsonParser = express.json();
 
 const sanitizeFolder = folder => ({
   id: folder.id,
-  title: xss(folder.title),
-  date_published: folder.date_published
+  name: xss(folder.name)
+  //date_published: folder.date_published
 });
 
 FoldersRouter.route("/")
@@ -22,22 +22,8 @@ FoldersRouter.route("/")
       .catch(next);
   })
   .post(jsonParser, (req, res, next) => {
-    const { title } = req.body;
-    const newFolder = { title };
-
-    /* === repeating info ===========
-    if (!title) {
-      return res.status(400).json({
-        error: { message: `Missing 'title' in request body` }
-      });
-    }
-
-    if (!content) {
-      return res.status(400).json({
-        error: { message: `Missing 'content' in request body` }
-      });
-    }
-    =============================== */
+    const { name } = req.body;
+    const newFolder = { name };
 
     for (const [key, value] of Object.entries(newFolder)) {
       if (value == null) {
@@ -52,18 +38,8 @@ FoldersRouter.route("/")
       .then(folder => {
         res
           .status(201)
-          .location(path.posix.join(req.originalUrl + `/${folder.id}`));
-        res.json(sanitizeArticle(folder));
-
-        /* ======= Repeating code ========
-        res.json({
-          id: article.id,
-          style: article.style,
-          title: xss(article.title), //sanitize title
-          content: xss(article.content), //sanitize content
-          date_published: article.date_published
-        });
-        ================================== */
+          .location(path.posix.join(req.originalUrl + `/${folder.id}`))
+          .json(sanitizeFolder(folder));
       })
       .catch(next);
   });
@@ -85,33 +61,6 @@ FoldersRouter.route("/:folderId")
   })
   .get((req, res, next) => {
     res.json(sanitizeFolder(res.folder));
-    /* ========= included in .all now =========
-    const knexInstance = req.app.get("db");
-
-    ArticlesService.getById(knexInstance, req.params.article_id)
-      .then(article => {
-        if (!article) {
-          return res.status(404).json({
-            error: { message: `Article doesn't exist` }
-          });
-        }
-        //      res.json(article);
-        res.json(sanitizeArticle(article)); */
-
-    /* ======= Repeating code ========
-      res.json({
-        id: article.id,
-        style: article.style,
-        title: xss(article.title), //sanitize title
-        content: xss(article.content), //sanitize content
-        date_published: article.date_published
-      });
-      ================================== */
-
-    /* ---contin.. included in .all now ---
-      })
-      .catch(next);
-      --------------------*/
   })
   .delete((req, res, next) => {
     //res.status(204).end()
@@ -123,14 +72,14 @@ FoldersRouter.route("/:folderId")
       .catch(next);
   })
   .patch(jsonParser, (req, res, next) => {
-    const { title } = req.body;
-    const folderToUpdate = { title };
+    const { name } = req.body;
+    const folderToUpdate = { name };
 
     const numberOfValues = Object.values(folderToUpdate).filter(Boolean).length;
     if (numberOfValues === 0) {
       return res.status(400).json({
         error: {
-          message: "Request body must contain a 'title'."
+          message: "Request body must contain a 'name."
         }
       });
     }
