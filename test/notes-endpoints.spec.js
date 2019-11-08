@@ -31,6 +31,7 @@ describe("Notes Endpoint", function() {
     context("Given there are notes in the database", () => {
       const testNotes = makeNotesArray();
       const testFolders = makeFoldersArray();
+      console.log("checking url", process.env.TEST_DB_URL);
 
       beforeEach("insert notes", () => {
         return db

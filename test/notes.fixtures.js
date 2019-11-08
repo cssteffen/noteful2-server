@@ -6,7 +6,7 @@ function makeNotesArray() {
       content:
         "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus consequuntur deserunt commodi, nobis qui inventore corrupti iusto aliquid debitis unde non.Adipisci, pariatur.Molestiae, libero esse hic adipisci autem neque ?",
       modified: "1919-12-22T16:28:32.615Z",
-      folderId: 1
+      folder_id: 1
     },
     {
       id: 2,
@@ -14,7 +14,7 @@ function makeNotesArray() {
       content:
         "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus consequuntur deserunt commodi, nobis qui inventore corrupti iusto aliquid debitis unde non.Adipisci, pariatur.Molestiae, libero esse hic adipisci autem neque ?",
       modified: "1919-12-22T16:28:32.615Z",
-      folderId: 1
+      folder_id: 1
     },
     {
       id: 3,
@@ -22,7 +22,7 @@ function makeNotesArray() {
       content:
         "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus consequuntur deserunt commodi, nobis qui inventore corrupti iusto aliquid debitis unde non.Adipisci, pariatur.Molestiae, libero esse hic adipisci autem neque ?",
       modified: "1919-12-22T16:28:32.615Z",
-      folderId: 2
+      folder_id: 2
     },
     {
       id: 4,
@@ -30,7 +30,7 @@ function makeNotesArray() {
       content:
         "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus consequuntur deserunt commodi, nobis qui inventore corrupti iusto aliquid debitis unde non.Adipisci, pariatur.Molestiae, libero esse hic adipisci autem neque ?",
       modified: "1919-12-22T16:28:32.615Z",
-      folderId: 3
+      folder_id: 3
     },
     {
       id: 5,
@@ -38,7 +38,7 @@ function makeNotesArray() {
       content:
         "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus consequuntur deserunt commodi, nobis qui inventore corrupti iusto aliquid debitis unde non.Adipisci, pariatur.Molestiae, libero esse hic adipisci autem neque ?",
       modified: "1919-12-22T16:28:32.615Z",
-      folderId: 4
+      folder_id: 4
     },
     {
       id: 6,
@@ -46,7 +46,7 @@ function makeNotesArray() {
       content:
         "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus consequuntur deserunt commodi, nobis qui inventore corrupti iusto aliquid debitis unde non.Adipisci, pariatur.Molestiae, libero esse hic adipisci autem neque ?",
       modified: "1919-12-22T16:28:32.615Z",
-      folderId: 5
+      folder_id: 5
     },
     {
       id: 7,
@@ -54,7 +54,7 @@ function makeNotesArray() {
       content:
         "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus consequuntur deserunt commodi, nobis qui inventore corrupti iusto aliquid debitis unde non.Adipisci, pariatur.Molestiae, libero esse hic adipisci autem neque ?",
       modified: "1919-12-22T16:28:32.615Z",
-      folderId: 6
+      folder_id: 6
     }
   ];
 }
