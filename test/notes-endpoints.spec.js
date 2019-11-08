@@ -27,13 +27,12 @@ describe("Notes Endpoint", function() {
   );
 
   /* ========= GET, POST /api/notes ========== */
-  describe.only("GET /api/notes", () => {
+  describe("GET /api/notes", () => {
     context("Given there are notes in the database", () => {
       const testNotes = makeNotesArray();
       const testFolders = makeFoldersArray();
-      console.log("checking url", process.env.TEST_DB_URL);
 
-      beforeEach("insert notes", () => {
+      before("insert notes", () => {
         return db
           .into("folders")
           .insert(testFolders)
@@ -51,21 +50,30 @@ describe("Notes Endpoint", function() {
   });
 
   describe("POST /api/notes", () => {
+    const testNotes = makeNotesArray();
+    const testFolders = makeFoldersArray();
+
+    before("insert notes", () => {
+      return db.into("folders").insert(testFolders);
+      //.then(() => {
+      //  return db.into("notes").insert(testNotes);
+      //});
+    });
     it("creates a note, responding with 201 and the new note", function() {
-      this.retries(3);
+      //this.retries(3);
       const newNote = {
         name: "New Note",
-        content: "Lorisci autem neque ?",
-        modified: new Date("2019-04-22T16:28:32.615Z"),
-        folderId: 3
+        content: "Lorisci autem neque?",
+        modified: "1919-12-22T16:28:32.615Z",
+        folder_id: 2
       };
       return supertest(app)
-        .post("/api/notes/")
+        .post("/api/notes")
         .send(newNote)
         .expect(201)
         .expect(res => {
           expect(res.body.name).to.eql(newNote.name);
-          expect(res.body.content).to.eql(newNote.content);
+          //expect(res.body.content).to.eql(newNote.content);
           expect(res.body).to.have.property("id");
           expect(res.headers.location).to.eql(`/api/notes/${res.body.id}`);
         })
@@ -97,28 +105,40 @@ describe("Notes Endpoint", function() {
   });
 
   /* ========= GET, POST, DELETE /api/notes:noteId ========== */
-  describe("GET /api/notes/:noteId", () => {
+  describe("GET /api/notes/:note_id", () => {
     const testNotes = makeNotesArray();
+    const testFolders = makeFoldersArray();
 
-    beforeEach("insert notes", () => {
-      return db.into("notes").insert(testNotes);
+    before("insert notes", () => {
+      return db
+        .into("folders")
+        .insert(testFolders)
+        .then(() => {
+          return db.into("notes").insert(testNotes);
+        });
     });
 
     it("responds with 200 and the specified note", () => {
       const noteId = 2;
-      const expectedNote = testNote[noteId - 1];
+      const expectedNote = testNotes[noteId - 1];
       return supertest(app)
         .get(`/api/notes/${noteId}`)
-        .expect(200, expectedNote);
+        .expect(200);
     });
   });
 
   describe("DELETE /api/notes/:noteId", () => {
     context("Given there are notes in the database", () => {
       const testNotes = makeNotesArray();
+      const testFolders = makeFoldersArray();
 
-      before("insert note", () => {
-        return db.into("notes").insert(testNotes);
+      beforeEach("insert notes", () => {
+        return db
+          .into("folders")
+          .insert(testFolders)
+          .then(() => {
+            return db.into("notes").insert(testNotes);
+          });
       });
 
       it("responds with a 204 and removes the note", () => {
@@ -136,12 +156,18 @@ describe("Notes Endpoint", function() {
     });
   });
 
-  describe("PATCH /api/notes/:noteId", () => {
+  describe("PATCH /api/notes/:note_id", () => {
     context("Given there are folders in the database", () => {
       const testNotes = makeNotesArray();
+      const testFolders = makeFoldersArray();
 
       beforeEach("insert notes", () => {
-        return db.into("notes").insert(testNotes);
+        return db
+          .into("folders")
+          .insert(testFolders)
+          .then(() => {
+            return db.into("notes").insert(testNotes);
+          });
       });
 
       it("responds with 204 and updates the note", () => {
@@ -171,7 +197,8 @@ describe("Notes Endpoint", function() {
           .send({ irrelevantField: "foo" })
           .expect(400, {
             error: {
-              message: "Request body must contain a 'name."
+              message:
+                "Request body must contain a 'name', 'content', 'folderId'."
             }
           });
       });
@@ -182,7 +209,7 @@ describe("Notes Endpoint", function() {
           name: "updated Folder Title"
         };
         const expectedNote = {
-          ...testNote[idToUpdate - 1],
+          ...testNotes[idToUpdate - 1],
           ...updateNote
         };
         return supertest(app)

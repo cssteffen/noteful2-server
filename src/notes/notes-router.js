@@ -11,7 +11,7 @@ const sanitizeNotes = note => ({
   name: xss(note.name),
   content: xss(note.content),
   modified: note.modified,
-  folderId: note.folderId
+  folder_id: note.folder_id
 });
 
 NotesRouter.route("/")
@@ -24,22 +24,8 @@ NotesRouter.route("/")
       .catch(next);
   })
   .post(jsonParser, (req, res, next) => {
-    const { name, content, folderId } = req.body;
-    const newNote = { name, folderId };
-
-    /* === repeating info ===========
-    if (!title) {
-      return res.status(400).json({
-        error: { message: `Missing 'title' in request body` }
-      });
-    }
-
-    if (!content) {
-      return res.status(400).json({
-        error: { message: `Missing 'content' in request body` }
-      });
-    }
-    =============================== */
+    const { name, content, folder_id } = req.body;
+    const newNote = { name, folder_id };
 
     for (const [key, value] of Object.entries(newNote)) {
       if (value == null) {
@@ -50,30 +36,19 @@ NotesRouter.route("/")
     }
 
     NotesService.insertNote(req.app.get("db"), newNote)
-
       .then(note => {
         res
           .status(201)
-          .location(path.posix.join(req.originalUrl + `/${noteId}`));
-        res.json(sanitizeArticle(note));
-
-        /* ======= Repeating code ========
-        res.json({
-          id: article.id,
-          style: article.style,
-          title: xss(article.title), //sanitize title
-          content: xss(article.content), //sanitize content
-          date_published: article.date_published
-        });
-        ================================== */
+          .location(path.posix.join(req.originalUrl, `/${note.id}`))
+          .json(sanitizeNotes(note));
       })
       .catch(next);
   });
 
-NotesRouter.route("/:noteId")
+NotesRouter.route("/:note_id")
   .all((req, res, next) => {
     const knexInstance = req.app.get("db");
-    NotesService.getById(knexInstance, req.params.noteId)
+    NotesService.getById(knexInstance, req.params.note_id)
       .then(note => {
         if (!note) {
           return res.status(404).json({
@@ -118,15 +93,15 @@ NotesRouter.route("/:noteId")
   .delete((req, res, next) => {
     //res.status(204).end()
     const knexInstance = req.app.get("db");
-    NotesService.deleteNote(knexInstance, req.params.noteId)
+    NotesService.deleteNote(knexInstance, req.params.note_id)
       .then(() => {
         res.status(204).end();
       })
       .catch(next);
   })
   .patch(jsonParser, (req, res, next) => {
-    const { name, content, modified, folderId } = req.body;
-    const noteToUpdate = { name, content, modified, folderId };
+    const { name, content, modified, folder_id } = req.body;
+    const noteToUpdate = { name, content, modified, folder_id };
 
     const numberOfValues = Object.values(noteToUpdate).filter(Boolean).length;
     if (numberOfValues === 0) {
@@ -137,7 +112,7 @@ NotesRouter.route("/:noteId")
       });
     }
 
-    NotessService.updateNote(req.app.get("db"), req.params.noteId, noteToUpdate)
+    NotesService.updateNote(req.app.get("db"), req.params.note_id, noteToUpdate)
       .then(numRowsAffected => {
         res.status(204).end();
       })
