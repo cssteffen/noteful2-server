@@ -25,7 +25,7 @@ NotesRouter.route("/")
   })
   .post(jsonParser, (req, res, next) => {
     const { name, content, folder_id } = req.body;
-    const newNote = { name, folder_id };
+    const newNote = { name, content, folder_id };
 
     for (const [key, value] of Object.entries(newNote)) {
       if (value == null) {
